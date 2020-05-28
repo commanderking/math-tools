@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import homeIcon from "../../home-icon.svg";
 
@@ -52,8 +52,8 @@ const CoordinateGridContainer = ({
     { x: -5, y: -2 },
     { x: -3, y: -4 },
   ],
-  gridHeight = 500,
-  gridWidth = 500,
+  gridHeight = 650,
+  gridWidth = 650,
   xDomain = [-10, 10],
   xTicks = 20,
   yDomain = [-10, 10],
@@ -68,17 +68,18 @@ const CoordinateGridContainer = ({
 
   const padding = 10;
 
+  const xScale = d3
+    .scaleLinear()
+    .domain(xDomain)
+    .range([padding, gridWidth - padding]);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain(yDomain)
+    .range([gridHeight - padding, padding]);
+
   useEffect(() => {
     const grid = d3.select(ref.current);
-    const xScale = d3
-      .scaleLinear()
-      .domain(xDomain)
-      .range([padding, gridWidth - padding]);
-
-    const yScale = d3
-      .scaleLinear()
-      .domain(yDomain)
-      .range([gridHeight - padding, padding]);
 
     // Define the axes
     const yAxis = d3.axisLeft(yScale);
@@ -144,30 +145,38 @@ const CoordinateGridContainer = ({
       const newData = [...data, d];
       renderIconData(newData);
     }
-
-    const coordinates = createCoordinates(xDomain, yDomain);
-
-    grid
-      .selectAll("circle")
-      .data(coordinates)
-      .enter()
-      .append("circle")
-      .attr("cx", function (d: any) {
-        return xScale(d.x);
-      })
-      .attr("cy", function (d: any) {
-        return yScale(d.y);
-      })
-      .attr("r", 5)
-      .attr("fill", "transparent")
-      .on("mouseover", handleCoordinateMouseover)
-      .on("mouseout", handleCoordinateMouseout)
-      .on("click", handleCoordinateClick);
   }, []);
 
+  const coordinates = createCoordinates(xDomain, yDomain);
+
+  const getCoordinateKey = (coordinate: { x: number; y: number }) => {
+    return `${coordinate.x}-${coordinate.y}`;
+  };
+
+  const fillCircle = (e: any) => {
+    e.target.style.fill = "orange";
+  };
+
+  const removeCircle = (e: any) => {
+    e.target.style.fill = "transparent";
+  };
   return (
-    <svg style={{ width: "500px", height: "500px" }}>
-      <g id={id} ref={ref}></g>
+    <svg style={{ width: "650px", height: "650px" }}>
+      <g id={id} ref={ref}>
+        {coordinates.map((coordinate: any) => {
+          return (
+            <circle
+              key={getCoordinateKey(coordinate)}
+              cx={xScale(coordinate.x)}
+              cy={yScale(coordinate.y)}
+              r={10}
+              fill="transparent"
+              onMouseOver={fillCircle}
+              onMouseOut={removeCircle}
+            ></circle>
+          );
+        })}
+      </g>
     </svg>
   );
 };
