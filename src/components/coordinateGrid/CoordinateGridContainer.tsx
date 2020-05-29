@@ -62,8 +62,8 @@ const CoordinateGridContainer = ({
   const ref: any = useRef();
 
   const svgDimensions = {
-    width: 10,
-    height: 10,
+    width: 20,
+    height: 20,
   };
 
   const padding = 10;
@@ -112,39 +112,6 @@ const CoordinateGridContainer = ({
       .attr("stroke", "silver")
       .attr("x1", ((gridWidth - 2 * padding) / 2) * -1)
       .attr("x2", ((gridWidth - 2 * padding) / 2) * 1);
-
-    function handleMouseOver() {
-      // Use D3 to select element, change color and size
-      // @ts-ignore
-      d3.select(this).attr({
-        fill: "orange",
-      });
-    }
-
-    const renderIconData = (iconData: any) =>
-      grid
-        .selectAll(".svg") // plot icon at each location
-        .data(iconData)
-        .enter()
-        .append("svg:image")
-        .attr("x", function (d: any) {
-          return xScale(d.x) - svgDimensions.width / 2;
-        })
-        .attr("y", function (d: any) {
-          return yScale(d.y) - svgDimensions.height / 2;
-        })
-        .attr("width", svgDimensions.width)
-        .attr("height", svgDimensions.height)
-        .attr("xlink:href", homeIcon)
-        .attr("fill", "orange")
-        .on("mouseover", handleMouseOver);
-
-    renderIconData(data);
-
-    function handleCoordinateClick(d: any) {
-      const newData = [...data, d];
-      renderIconData(newData);
-    }
   }, []);
 
   const coordinates = createCoordinates(xDomain, yDomain);
@@ -161,7 +128,7 @@ const CoordinateGridContainer = ({
     e.target.style.fill = "transparent";
   };
   return (
-    <svg style={{ width: "650px", height: "650px" }}>
+    <svg width={gridWidth} height={gridHeight}>
       <g id={id} ref={ref}>
         {coordinates.map((coordinate: any) => {
           return (
@@ -174,6 +141,18 @@ const CoordinateGridContainer = ({
               onMouseOver={fillCircle}
               onMouseOut={removeCircle}
             ></circle>
+          );
+        })}
+        {data.map((coordinate: any) => {
+          return (
+            <image
+              href={homeIcon}
+              x={xScale(coordinate.x) - svgDimensions.width / 2}
+              y={yScale(coordinate.y) - svgDimensions.height / 2}
+              width={svgDimensions.width}
+              height={svgDimensions.height}
+              xlinkHref={homeIcon}
+            ></image>
           );
         })}
       </g>
