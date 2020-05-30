@@ -1,6 +1,8 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as d3 from "d3";
 import homeIcon from "../../home-icon.svg";
+import cellTower from "../../images/cell-tower.svg";
+// For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
 type Props = {
   id: string;
@@ -8,9 +10,10 @@ type Props = {
   gridHeight?: number;
   gridWidth?: number;
   xDomain?: [number, number];
-  xTicks?: number;
+  xTicksNumber?: number;
   yDomain?: [number, number];
-  yTicks?: number;
+  yTicksNumber?: number;
+  maxAddedIcons?: number;
 };
 
 const createCoordinates = (xDomain: any, yDomain: any) => {
@@ -33,17 +36,6 @@ const createCoordinates = (xDomain: any, yDomain: any) => {
   return coordinates;
 };
 
-function handleCoordinateMouseover(d: any) {
-  // Use D3 to select element, change color and size
-  // @ts-ignore
-  d3.select(this).attr("fill", "orange");
-}
-
-function handleCoordinateMouseout(d: any) {
-  //@ts-ignore
-  d3.select(this).attr("fill", "transparent");
-}
-
 const CoordinateGridContainer = ({
   id,
   data = [
@@ -55,12 +47,12 @@ const CoordinateGridContainer = ({
   gridHeight = 650,
   gridWidth = 650,
   xDomain = [-10, 10],
-  xTicks = 20,
+  xTicksNumber = 20,
   yDomain = [-10, 10],
-  yTicks = 20,
+  yTicksNumber = 20,
+  maxAddedIcons = 5,
 }: Props) => {
-  const ref: any = useRef();
-
+  const [addedIcons, setAddedIcons] = useState([{ x: 1, y: 1, key: "1-1" }]);
   const svgDimensions = {
     width: 20,
     height: 20,
@@ -78,41 +70,15 @@ const CoordinateGridContainer = ({
     .domain(yDomain)
     .range([gridHeight - padding, padding]);
 
-  useEffect(() => {
-    const grid = d3.select(ref.current);
+  const xTicks = xScale.ticks(xTicksNumber).map((value) => ({
+    value,
+    xOffset: xScale(value),
+  }));
 
-    // Define the axes
-    const yAxis = d3.axisLeft(yScale);
-    const xAxis = d3.axisBottom(xScale);
-
-    // Plot the x-axis
-    const xAxisPlot = grid
-      .append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + gridHeight / 2 + ")")
-      .call(xAxis.ticks(xTicks));
-
-    // Plot the y-axis
-    const yAxisPlot = grid
-      .append("g")
-      .attr("class", "axis axis--y")
-      .attr("transform", "translate(" + gridWidth / 2 + ",0)")
-      .call(yAxis.ticks(yTicks));
-
-    // Add the x-axis lines/ticks
-    xAxisPlot
-      .selectAll(".tick line")
-      .attr("stroke", "silver")
-      .attr("y1", ((gridWidth - 2 * padding) / 2) * -1)
-      .attr("y2", ((gridWidth - 2 * padding) / 2) * 1);
-
-    // Add the y-axis lines/ticks
-    yAxisPlot
-      .selectAll(".tick line")
-      .attr("stroke", "silver")
-      .attr("x1", ((gridWidth - 2 * padding) / 2) * -1)
-      .attr("x2", ((gridWidth - 2 * padding) / 2) * 1);
-  }, []);
+  const yTicks = yScale.ticks(yTicksNumber).map((value) => ({
+    value,
+    yOffset: yScale(value),
+  }));
 
   const coordinates = createCoordinates(xDomain, yDomain);
 
@@ -127,22 +93,72 @@ const CoordinateGridContainer = ({
   const removeCircle = (e: any) => {
     e.target.style.fill = "transparent";
   };
+
+  const halfLength = (gridWidth - 2 * padding) / 2;
+
+  const hasAddedMaxIcons = addedIcons.length >= maxAddedIcons;
+
   return (
     <svg width={gridWidth} height={gridHeight}>
-      <g id={id} ref={ref}>
-        {coordinates.map((coordinate: any) => {
+      <g id={id}>
+        {xTicks.map(({ value, xOffset }) => {
           return (
-            <circle
-              key={getCoordinateKey(coordinate)}
-              cx={xScale(coordinate.x)}
-              cy={yScale(coordinate.y)}
-              r={10}
-              fill="transparent"
-              onMouseOver={fillCircle}
-              onMouseOut={removeCircle}
-            ></circle>
+            <g
+              key={value}
+              transform={`translate(${xOffset}, ${gridHeight / 2})`}
+            >
+              <line y1={-halfLength} y2={halfLength} stroke="silver" />
+              <text
+                key={value}
+                style={{
+                  fontSize: "10px",
+                  textAnchor: "middle",
+                  transform: "translateY(15px)",
+                }}
+              >
+                {value}
+              </text>
+            </g>
           );
         })}
+        {yTicks.map(({ value, yOffset }) => {
+          return (
+            <g
+              key={value}
+              transform={`translate( ${gridWidth / 2}, ${yOffset})`}
+            >
+              <line x1={-halfLength} x2={halfLength} stroke="silver" />
+              <text
+                key={value}
+                style={{
+                  fontSize: "10px",
+                  textAnchor: "middle",
+                  transform: `translateX(-10px)`,
+                }}
+              >
+                {value}
+              </text>
+            </g>
+          );
+        })}
+        {!hasAddedMaxIcons &&
+          coordinates.map((coordinate: any) => {
+            const { x, y } = coordinate;
+            return (
+              <circle
+                key={getCoordinateKey(coordinate)}
+                cx={xScale(x)}
+                cy={yScale(y)}
+                r={10}
+                fill="transparent"
+                onMouseOver={fillCircle}
+                onMouseOut={removeCircle}
+                onClick={() => {
+                  setAddedIcons([...addedIcons, { x, y, key: `${x}-${y}` }]);
+                }}
+              />
+            );
+          })}
         {data.map((coordinate: any) => {
           return (
             <image
@@ -152,7 +168,27 @@ const CoordinateGridContainer = ({
               width={svgDimensions.width}
               height={svgDimensions.height}
               xlinkHref={homeIcon}
-            ></image>
+            />
+          );
+        })}
+        {addedIcons.map((coordinate: any) => {
+          const { x, y } = coordinate;
+          return (
+            <image
+              href={cellTower}
+              x={xScale(x) - svgDimensions.width / 2}
+              y={yScale(y) - svgDimensions.height / 2}
+              width={svgDimensions.width}
+              height={svgDimensions.height}
+              style={{ fill: "blue" }}
+              xlinkHref={cellTower}
+              onClick={(test) => {
+                const updatedAddedIcons = addedIcons.filter(
+                  (icon) => icon.key !== `${x}-${y}`
+                );
+                setAddedIcons(updatedAddedIcons);
+              }}
+            />
           );
         })}
       </g>
