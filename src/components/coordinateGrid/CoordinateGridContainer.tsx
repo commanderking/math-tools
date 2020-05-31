@@ -6,14 +6,25 @@ import cellTower from "../../images/cell-tower.svg";
 
 type Props = {
   id: string;
-  data?: Object[];
-  gridHeight?: number;
-  gridWidth?: number;
+  gridHeight: number;
+  gridWidth: number;
+  preplacedIcons?: PreplacedIcon[];
   xDomain?: [number, number];
   xTicksNumber?: number;
   yDomain?: [number, number];
   yTicksNumber?: number;
   maxAddedIcons?: number;
+};
+
+type Coordinate = {
+  x: number;
+  y: number;
+};
+
+type PreplacedIcon = {
+  iconImage: string;
+  coordinates: Coordinate[];
+  iconSize: number;
 };
 
 const createCoordinates = (xDomain: any, yDomain: any) => {
@@ -38,14 +49,9 @@ const createCoordinates = (xDomain: any, yDomain: any) => {
 
 const CoordinateGridContainer = ({
   id,
-  data = [
-    { x: 1, y: 2 },
-    { x: 5, y: 9 },
-    { x: -5, y: -2 },
-    { x: -3, y: -4 },
-  ],
-  gridHeight = 650,
-  gridWidth = 650,
+  preplacedIcons,
+  gridHeight,
+  gridWidth,
   xDomain = [-10, 10],
   xTicksNumber = 20,
   yDomain = [-10, 10],
@@ -149,7 +155,7 @@ const CoordinateGridContainer = ({
                 key={getCoordinateKey(coordinate)}
                 cx={xScale(x)}
                 cy={yScale(y)}
-                r={10}
+                r={7.5}
                 fill="transparent"
                 onMouseOver={fillCircle}
                 onMouseOut={removeCircle}
@@ -159,38 +165,45 @@ const CoordinateGridContainer = ({
               />
             );
           })}
-        {data.map((coordinate: any) => {
-          return (
-            <image
-              href={homeIcon}
-              x={xScale(coordinate.x) - svgDimensions.width / 2}
-              y={yScale(coordinate.y) - svgDimensions.height / 2}
-              width={svgDimensions.width}
-              height={svgDimensions.height}
-              xlinkHref={homeIcon}
-            />
-          );
-        })}
-        {addedIcons.map((coordinate: any) => {
-          const { x, y } = coordinate;
-          return (
-            <image
-              href={cellTower}
-              x={xScale(x) - svgDimensions.width / 2}
-              y={yScale(y) - svgDimensions.height / 2}
-              width={svgDimensions.width}
-              height={svgDimensions.height}
-              style={{ fill: "blue" }}
-              xlinkHref={cellTower}
-              onClick={(test) => {
-                const updatedAddedIcons = addedIcons.filter(
-                  (icon) => icon.key !== `${x}-${y}`
-                );
-                setAddedIcons(updatedAddedIcons);
-              }}
-            />
-          );
-        })}
+        {preplacedIcons &&
+          preplacedIcons.map((preplacedIcon: PreplacedIcon) => {
+            const { coordinates, iconImage, iconSize } = preplacedIcon;
+            return coordinates.map((coordinate: Coordinate) => {
+              const { x, y } = coordinate;
+              console.log("coordinate", coordinate);
+              return (
+                <image
+                  href={iconImage}
+                  x={xScale(x) - iconSize / 2}
+                  y={yScale(y) - iconSize / 2}
+                  width={iconSize}
+                  height={iconSize}
+                  xlinkHref={iconImage}
+                />
+              );
+            });
+          })}
+        {maxAddedIcons &&
+          addedIcons.map((coordinate: any) => {
+            const { x, y } = coordinate;
+            return (
+              <image
+                href={cellTower}
+                x={xScale(x) - svgDimensions.width / 2}
+                y={yScale(y) - svgDimensions.height / 2}
+                width={svgDimensions.width}
+                height={svgDimensions.height}
+                style={{ fill: "blue" }}
+                xlinkHref={cellTower}
+                onClick={() => {
+                  const updatedAddedIcons = addedIcons.filter(
+                    (icon) => icon.key !== `${x}-${y}`
+                  );
+                  setAddedIcons(updatedAddedIcons);
+                }}
+              />
+            );
+          })}
       </g>
     </svg>
   );
