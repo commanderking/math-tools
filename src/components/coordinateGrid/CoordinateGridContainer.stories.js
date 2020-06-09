@@ -2,6 +2,7 @@ import React from "react";
 import CoordinateGridContainer from "./CoordinateGridContainer";
 import homeIcon from "home-icon.svg";
 import { withKnobs, text, boolean, number } from "@storybook/addon-knobs";
+import cellTower from "../../images/cell-tower.svg";
 
 export default {
   component: CoordinateGridContainer,
@@ -41,3 +42,18 @@ export const PreplacedIcons = () => (
     ]}
   />
 );
+
+export const AddableIcons = () => {
+  return (
+    <CoordinateGridContainer
+      id="AddableIcons"
+      gridHeight={600}
+      gridWidth={600}
+      addableIcon={{
+        iconImage: cellTower,
+        iconSize: 20,
+        maxIcons: 5,
+      }}
+    />
+  );
+};

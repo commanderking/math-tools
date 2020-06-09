@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import * as d3 from "d3";
-import homeIcon from "../../home-icon.svg";
 import cellTower from "../../images/cell-tower.svg";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
@@ -13,7 +12,7 @@ type Props = {
   xTicksNumber?: number;
   yDomain?: [number, number];
   yTicksNumber?: number;
-  maxAddedIcons?: number;
+  addableIcon?: AddableIcon;
 };
 
 type Coordinate = {
@@ -25,6 +24,12 @@ type PreplacedIcon = {
   iconImage: string;
   coordinates: Coordinate[];
   iconSize: number;
+};
+
+type AddableIcon = {
+  iconImage: string;
+  iconSize: number;
+  maxIcons?: number;
 };
 
 const createCoordinates = (xDomain: any, yDomain: any) => {
@@ -56,9 +61,9 @@ const CoordinateGridContainer = ({
   xTicksNumber = 20,
   yDomain = [-10, 10],
   yTicksNumber = 20,
-  maxAddedIcons = 5,
+  addableIcon,
 }: Props) => {
-  const [addedIcons, setAddedIcons] = useState([{ x: 1, y: 1, key: "1-1" }]);
+  const [addedIcons, setAddedIcons] = useState([]);
   const svgDimensions = {
     width: 20,
     height: 20,
@@ -102,7 +107,10 @@ const CoordinateGridContainer = ({
 
   const halfLength = (gridWidth - 2 * padding) / 2;
 
-  const hasAddedMaxIcons = addedIcons.length >= maxAddedIcons;
+  const hasAddedMaxIcons =
+    addableIcon &&
+    addableIcon.maxIcons &&
+    addedIcons.length >= addableIcon.maxIcons;
 
   return (
     <svg width={gridWidth} height={gridHeight}>
@@ -147,7 +155,8 @@ const CoordinateGridContainer = ({
             </g>
           );
         })}
-        {!hasAddedMaxIcons &&
+        {addableIcon &&
+          !hasAddedMaxIcons &&
           coordinates.map((coordinate: any) => {
             const { x, y } = coordinate;
             return (
@@ -183,27 +192,26 @@ const CoordinateGridContainer = ({
               );
             });
           })}
-        {maxAddedIcons &&
-          addedIcons.map((coordinate: any) => {
-            const { x, y } = coordinate;
-            return (
-              <image
-                href={cellTower}
-                x={xScale(x) - svgDimensions.width / 2}
-                y={yScale(y) - svgDimensions.height / 2}
-                width={svgDimensions.width}
-                height={svgDimensions.height}
-                style={{ fill: "blue" }}
-                xlinkHref={cellTower}
-                onClick={() => {
-                  const updatedAddedIcons = addedIcons.filter(
-                    (icon) => icon.key !== `${x}-${y}`
-                  );
-                  setAddedIcons(updatedAddedIcons);
-                }}
-              />
-            );
-          })}
+        {addedIcons.map((coordinate: any) => {
+          const { x, y } = coordinate;
+          return (
+            <image
+              href={cellTower}
+              x={xScale(x) - svgDimensions.width / 2}
+              y={yScale(y) - svgDimensions.height / 2}
+              width={svgDimensions.width}
+              height={svgDimensions.height}
+              style={{ fill: "blue" }}
+              xlinkHref={cellTower}
+              onClick={() => {
+                const updatedAddedIcons = addedIcons.filter(
+                  (icon) => icon.key !== `${x}-${y}`
+                );
+                setAddedIcons(updatedAddedIcons);
+              }}
+            />
+          );
+        })}
       </g>
     </svg>
   );
