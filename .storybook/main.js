@@ -5,5 +5,6 @@ module.exports = {
     "@storybook/addon-actions",
     "@storybook/addon-links",
     "@storybook/preset-typescript",
+    "@storybook/addon-knobs/register",
   ],
 };
