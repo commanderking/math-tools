@@ -1,7 +1,13 @@
 import React from "react";
 import CoordinateGridContainer from "./CoordinateGridContainer";
 import homeIcon from "home-icon.svg";
-import { withKnobs, text, boolean, number } from "@storybook/addon-knobs";
+import {
+  withKnobs,
+  text,
+  boolean,
+  number,
+  select,
+} from "@storybook/addon-knobs";
 import cellTower from "../../images/cell-tower.svg";
 
 export default {
@@ -50,9 +56,13 @@ export const AddableIcons = () => {
       gridHeight={600}
       gridWidth={600}
       addableIcon={{
-        iconImage: cellTower,
-        iconSize: 20,
-        maxIcons: 5,
+        iconImage: select(
+          "Icon Image",
+          { CellTower: cellTower, Home: homeIcon },
+          cellTower
+        ),
+        iconSize: number("Icon Size", 20),
+        maxIcons: number("Max Number of Icons", 5),
       }}
     />
   );

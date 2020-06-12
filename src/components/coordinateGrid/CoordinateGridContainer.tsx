@@ -64,10 +64,6 @@ const CoordinateGridContainer = ({
   addableIcon,
 }: Props) => {
   const [addedIcons, setAddedIcons] = useState([]);
-  const svgDimensions = {
-    width: 20,
-    height: 20,
-  };
 
   const padding = 10;
 
@@ -192,26 +188,28 @@ const CoordinateGridContainer = ({
               );
             });
           })}
-        {addedIcons.map((coordinate: any) => {
-          const { x, y } = coordinate;
-          return (
-            <image
-              href={cellTower}
-              x={xScale(x) - svgDimensions.width / 2}
-              y={yScale(y) - svgDimensions.height / 2}
-              width={svgDimensions.width}
-              height={svgDimensions.height}
-              style={{ fill: "blue" }}
-              xlinkHref={cellTower}
-              onClick={() => {
-                const updatedAddedIcons = addedIcons.filter(
-                  (icon) => icon.key !== `${x}-${y}`
-                );
-                setAddedIcons(updatedAddedIcons);
-              }}
-            />
-          );
-        })}
+        {addableIcon &&
+          addedIcons.map((coordinate: any) => {
+            const { x, y } = coordinate;
+            const { iconSize, iconImage } = addableIcon;
+            return (
+              <image
+                href={iconImage}
+                x={xScale(x) - iconSize / 2}
+                y={yScale(y) - iconSize / 2}
+                width={iconSize}
+                height={iconSize}
+                style={{ fill: "blue" }}
+                xlinkHref={iconImage}
+                onClick={() => {
+                  const updatedAddedIcons = addedIcons.filter(
+                    (icon) => icon.key !== `${x}-${y}`
+                  );
+                  setAddedIcons(updatedAddedIcons);
+                }}
+              />
+            );
+          })}
       </g>
     </svg>
   );
