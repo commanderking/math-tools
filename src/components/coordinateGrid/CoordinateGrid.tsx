@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import cellTower from "../../images/cell-tower.svg";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
-export type Props = {
+type Props = {
   id: string;
   gridHeight: number;
   gridWidth: number;
