@@ -1,30 +1,14 @@
 {
-  "name": "coordinate_grid",
+  "name": "open-math-tools",
+  "main": "dist/index.js",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/d3": "^5.7.2",
-    "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
-    "d3": "^5.16.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
-    "storybook": "^5.3.19",
-    "typescript": "~3.7.2"
-  },
+  "dependencies": {},
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "rollup:build": "rollup -c",
+    "rollup:start": "rollup -c -w"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,6 +32,30 @@
     "@storybook/addons": "^5.3.19",
     "@storybook/preset-create-react-app": "^3.0.0",
     "@storybook/preset-typescript": "^3.0.0",
-    "@storybook/react": "^5.3.19"
-  }
+    "@storybook/react": "^5.3.19",
+    "rollup": "^2.17.0",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/d3": "^5.7.2",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "babel-core": "^6.26.3",
+    "babel-runtime": "^6.26.0",
+    "d3": "^5.16.0",
+    "storybook": "^5.3.19",
+    "typescript": "^3.9.5"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "files": [
+    "dist"
+  ]
 }

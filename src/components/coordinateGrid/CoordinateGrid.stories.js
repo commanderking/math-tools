@@ -1,23 +1,16 @@
 import React from "react";
-import CoordinateGridContainer from "./CoordinateGridContainer";
-import homeIcon from "home-icon.svg";
-import {
-  withKnobs,
-  text,
-  boolean,
-  number,
-  select,
-} from "@storybook/addon-knobs";
+import { CoordinateGrid } from "./CoordinateGrid";
+import homeIcon from "../../images/home-icon.svg";
+import { withKnobs, number, select } from "@storybook/addon-knobs";
 import cellTower from "../../images/cell-tower.svg";
-
 export default {
-  component: CoordinateGridContainer,
+  component: CoordinateGrid,
   title: "Coordinate Grid",
   decorators: [withKnobs],
 };
 
 export const Basic = () => (
-  <CoordinateGridContainer
+  <CoordinateGrid
     id="BasicCoordinateGrid"
     gridHeight={number("gridHeigt", 500)}
     gridWidth={number("gridWidth", 500)}
@@ -27,7 +20,7 @@ export const Basic = () => (
 );
 
 export const PreplacedIcons = () => (
-  <CoordinateGridContainer
+  <CoordinateGrid
     id="PreplacedIconsGrid"
     gridHeight={600}
     gridWidth={600}
@@ -51,7 +44,7 @@ export const PreplacedIcons = () => (
 
 export const AddableIcons = () => {
   return (
-    <CoordinateGridContainer
+    <CoordinateGrid
       id="AddableIcons"
       gridHeight={600}
       gridWidth={600}

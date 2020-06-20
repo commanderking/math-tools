@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 import * as d3 from "d3";
 import cellTower from "../../images/cell-tower.svg";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
@@ -52,7 +52,7 @@ const createCoordinates = (xDomain: any, yDomain: any) => {
   return coordinates;
 };
 
-const CoordinateGridContainer = ({
+const CoordinateGrid = ({
   id,
   preplacedIcons,
   gridHeight,
@@ -63,7 +63,9 @@ const CoordinateGridContainer = ({
   yTicksNumber = 20,
   addableIcon,
 }: Props) => {
-  const [addedIcons, setAddedIcons] = useState([]);
+  const [addedIcons, setAddedIcons] = useState<
+    { x: number; y: number; key: string }[]
+  >([]);
 
   const padding = 10;
 
@@ -215,4 +217,4 @@ const CoordinateGridContainer = ({
   );
 };
 
-export default CoordinateGridContainer;
+export { CoordinateGrid };
