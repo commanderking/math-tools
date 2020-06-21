@@ -2,9 +2,6 @@
   "name": "open-math-tools",
   "main": "dist/index.js",
   "version": "0.1.0",
-  "dependencies": {
-    "react-dom": "^16.13.1"
-  },
   "scripts": {
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -c .storybook -o docs",
