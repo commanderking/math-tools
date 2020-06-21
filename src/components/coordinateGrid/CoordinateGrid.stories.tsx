@@ -12,7 +12,7 @@ export default {
 export const Basic = () => (
   <CoordinateGrid
     id="BasicCoordinateGrid"
-    gridHeight={number("gridHeigt", 500)}
+    gridHeight={number("gridHeight", 500)}
     gridWidth={number("gridWidth", 500)}
     xTicksNumber={number("Number of X-axis Ticks", 20)}
     yTicksNumber={number("Number of Y-axis Ticks", 20)}
