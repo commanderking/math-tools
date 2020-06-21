@@ -1,5 +1,5 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
-import * as d3 from "d3";
+import * as d3Scale from "d3-scale";
 import cellTower from "../../images/cell-tower.svg";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
@@ -69,12 +69,12 @@ const CoordinateGrid = ({
 
   const padding = 10;
 
-  const xScale = d3
+  const xScale = d3Scale
     .scaleLinear()
     .domain(xDomain)
     .range([padding, gridWidth - padding]);
 
-  const yScale = d3
+  const yScale = d3Scale
     .scaleLinear()
     .domain(yDomain)
     .range([gridHeight - padding, padding]);
