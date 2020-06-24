@@ -23,7 +23,12 @@
       "last 1 safari version"
     ]
   },
+  "dependencies": {
+    "d3-scale": "^3.2.1"
+  },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^8.1.0",
     "@storybook/addon-actions": "^5.3.19",
     "@storybook/addon-knobs": "^5.3.19",
     "@storybook/addon-links": "^5.3.19",
@@ -42,9 +47,9 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^8.1.0",
     "babel-runtime": "^6.26.0",
-    "d3-scale": "^3.2.1",
     "react-scripts": "^3.4.1",
     "rollup": "^2.17.0",
+    "rollup-plugin-peer-deps-external": "^2.2.2",
     "rollup-plugin-typescript2": "^0.27.1",
     "storybook": "^5.3.19",
     "typescript": "^3.9.5"
