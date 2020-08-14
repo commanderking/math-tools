@@ -1,6 +1,6 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState } from "react";
+import { PreplacedIcon, Coordinate } from "./types";
 import * as d3Scale from "d3-scale";
-import cellTower from "../../images/cell-tower.svg";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
 type Props = {
@@ -13,17 +13,8 @@ type Props = {
   yDomain?: [number, number];
   yTicksNumber?: number;
   addableIcon?: AddableIcon;
-};
-
-type Coordinate = {
-  x: number;
-  y: number;
-};
-
-type PreplacedIcon = {
-  iconImage: string;
-  coordinates: Coordinate[];
-  iconSize: number;
+  showXLabels?: boolean;
+  showYLabels?: boolean;
 };
 
 type AddableIcon = {
@@ -32,19 +23,22 @@ type AddableIcon = {
   maxIcons?: number;
 };
 
-const createCoordinates = (xDomain: any, yDomain: any) => {
+const createCoordinates = (
+  xDomain: [number, number],
+  yDomain: [number, number]
+) => {
   let xCoordinates = [];
   for (let i = xDomain[0]; i <= xDomain[1]; i++) {
     xCoordinates.push(i);
   }
 
-  let yCoordinates: any = [];
+  let yCoordinates: number[] = [];
   for (let i = yDomain[0]; i <= yDomain[1]; i++) {
     yCoordinates.push(i);
   }
-  let coordinates: any = [];
-  xCoordinates.forEach((x: any) => {
-    yCoordinates.forEach((y: any) => {
+  let coordinates: Coordinate[] = [];
+  xCoordinates.forEach((x: number) => {
+    yCoordinates.forEach((y: number) => {
       coordinates.push({ x, y });
     });
   });
@@ -62,6 +56,8 @@ const CoordinateGrid = ({
   yDomain = [-10, 10],
   yTicksNumber = 20,
   addableIcon,
+  showXLabels = true,
+  showYLabels = true,
 }: Props) => {
   const [addedIcons, setAddedIcons] = useState<
     { x: number; y: number; key: string }[]
@@ -103,7 +99,8 @@ const CoordinateGrid = ({
     e.target.style.fill = "transparent";
   };
 
-  const halfLength = (gridWidth - 2 * padding) / 2;
+  const halfHeight = (gridHeight - 2 * padding) / 2;
+  const halfWidth = (gridWidth - 2 * padding) / 2;
 
   const hasAddedMaxIcons =
     addableIcon &&
@@ -119,17 +116,19 @@ const CoordinateGrid = ({
               key={value}
               transform={`translate(${xOffset}, ${gridHeight / 2})`}
             >
-              <line y1={-halfLength} y2={halfLength} stroke="silver" />
-              <text
-                key={value}
-                style={{
-                  fontSize: "10px",
-                  textAnchor: "middle",
-                  transform: "translateY(15px)",
-                }}
-              >
-                {value}
-              </text>
+              <line y1={-halfHeight} y2={halfHeight} stroke="silver" />
+              {showXLabels && (
+                <text
+                  key={value}
+                  style={{
+                    fontSize: "10px",
+                    textAnchor: "middle",
+                    transform: "translateY(15px)",
+                  }}
+                >
+                  {value}
+                </text>
+              )}
             </g>
           );
         })}
@@ -139,23 +138,25 @@ const CoordinateGrid = ({
               key={value}
               transform={`translate( ${gridWidth / 2}, ${yOffset})`}
             >
-              <line x1={-halfLength} x2={halfLength} stroke="silver" />
-              <text
-                key={value}
-                style={{
-                  fontSize: "10px",
-                  textAnchor: "middle",
-                  transform: `translateX(-10px)`,
-                }}
-              >
-                {value}
-              </text>
+              <line x1={-halfWidth} x2={halfWidth} stroke="silver" />
+              {showYLabels && (
+                <text
+                  key={value}
+                  style={{
+                    fontSize: "10px",
+                    textAnchor: "middle",
+                    transform: `translateX(-10px)`,
+                  }}
+                >
+                  {value}
+                </text>
+              )}
             </g>
           );
         })}
         {addableIcon &&
           !hasAddedMaxIcons &&
-          coordinates.map((coordinate: any) => {
+          coordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             return (
               <circle
@@ -177,7 +178,6 @@ const CoordinateGrid = ({
             const { coordinates, iconImage, iconSize } = preplacedIcon;
             return coordinates.map((coordinate: Coordinate) => {
               const { x, y } = coordinate;
-              console.log("coordinate", coordinate);
               return (
                 <image
                   href={iconImage}
@@ -191,7 +191,7 @@ const CoordinateGrid = ({
             });
           })}
         {addableIcon &&
-          addedIcons.map((coordinate: any) => {
+          addedIcons.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             const { iconSize, iconImage } = addableIcon;
             return (
