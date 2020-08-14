@@ -13,6 +13,8 @@ type Props = {
   yDomain?: [number, number];
   yTicksNumber?: number;
   addableIcon?: AddableIcon;
+  showXLabels?: boolean;
+  showYLabels?: boolean;
 };
 
 type Coordinate = {
@@ -62,6 +64,8 @@ const CoordinateGrid = ({
   yDomain = [-10, 10],
   yTicksNumber = 20,
   addableIcon,
+  showXLabels = true,
+  showYLabels = true,
 }: Props) => {
   const [addedIcons, setAddedIcons] = useState<
     { x: number; y: number; key: string }[]
@@ -120,16 +124,18 @@ const CoordinateGrid = ({
               transform={`translate(${xOffset}, ${gridHeight / 2})`}
             >
               <line y1={-halfLength} y2={halfLength} stroke="silver" />
-              <text
-                key={value}
-                style={{
-                  fontSize: "10px",
-                  textAnchor: "middle",
-                  transform: "translateY(15px)",
-                }}
-              >
-                {value}
-              </text>
+              {showXLabels && (
+                <text
+                  key={value}
+                  style={{
+                    fontSize: "10px",
+                    textAnchor: "middle",
+                    transform: "translateY(15px)",
+                  }}
+                >
+                  {value}
+                </text>
+              )}
             </g>
           );
         })}
@@ -140,16 +146,18 @@ const CoordinateGrid = ({
               transform={`translate( ${gridWidth / 2}, ${yOffset})`}
             >
               <line x1={-halfLength} x2={halfLength} stroke="silver" />
-              <text
-                key={value}
-                style={{
-                  fontSize: "10px",
-                  textAnchor: "middle",
-                  transform: `translateX(-10px)`,
-                }}
-              >
-                {value}
-              </text>
+              {showYLabels && (
+                <text
+                  key={value}
+                  style={{
+                    fontSize: "10px",
+                    textAnchor: "middle",
+                    transform: `translateX(-10px)`,
+                  }}
+                >
+                  {value}
+                </text>
+              )}
             </g>
           );
         })}

@@ -1,7 +1,7 @@
 import React from "react";
 import { CoordinateGrid } from "./CoordinateGrid";
 import homeIcon from "../../images/home-icon.svg";
-import { withKnobs, number, select } from "@storybook/addon-knobs";
+import { withKnobs, number, select, boolean } from "@storybook/addon-knobs";
 import cellTower from "../../images/cell-tower.svg";
 export default {
   component: CoordinateGrid,
@@ -16,6 +16,9 @@ export const Basic = () => (
     gridWidth={number("gridWidth", 500)}
     xTicksNumber={number("Number of X-axis Ticks", 20)}
     yTicksNumber={number("Number of Y-axis Ticks", 20)}
+    xDomain={[number("xMin", -10), number("xMax", 10)]}
+    showXLabels={boolean("Show X Labels", true)}
+    showYLabels={boolean("Show Y Labels", true)}
   />
 );
 
