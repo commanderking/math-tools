@@ -23,19 +23,22 @@ type AddableIcon = {
   maxIcons?: number;
 };
 
-const createCoordinates = (xDomain: any, yDomain: any) => {
+const createCoordinates = (
+  xDomain: [number, number],
+  yDomain: [number, number]
+) => {
   let xCoordinates = [];
   for (let i = xDomain[0]; i <= xDomain[1]; i++) {
     xCoordinates.push(i);
   }
 
-  let yCoordinates: any = [];
+  let yCoordinates: number[] = [];
   for (let i = yDomain[0]; i <= yDomain[1]; i++) {
     yCoordinates.push(i);
   }
-  let coordinates: any = [];
-  xCoordinates.forEach((x: any) => {
-    yCoordinates.forEach((y: any) => {
+  let coordinates: Coordinate[] = [];
+  xCoordinates.forEach((x: number) => {
+    yCoordinates.forEach((y: number) => {
       coordinates.push({ x, y });
     });
   });
@@ -188,7 +191,7 @@ const CoordinateGrid = ({
             });
           })}
         {addableIcon &&
-          addedIcons.map((coordinate: any) => {
+          addedIcons.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             const { iconSize, iconImage } = addableIcon;
             return (

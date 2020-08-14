@@ -2,17 +2,17 @@ import React from "react";
 import { CoordinateGrid } from "./CoordinateGrid";
 import { PreplacedIcon } from "./types";
 type Props = {
-  gridWidth: number;
-  gridHeight: number;
+  gridWidth?: number;
+  gridHeight?: number;
   // icon coordinates start at (0,0) and move in the positive direction
   preplacedIcons: PreplacedIcon[];
-  dimensions: [number, number];
+  dimensions?: [number, number];
 };
 
 const SimpleGrid = ({
   preplacedIcons,
-  gridWidth,
-  gridHeight,
+  gridWidth = 300,
+  gridHeight = 300,
   dimensions = [5, 5],
 }: Props) => {
   const maxXDomain = dimensions[0];
