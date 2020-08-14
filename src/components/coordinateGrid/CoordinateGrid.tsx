@@ -96,7 +96,8 @@ const CoordinateGrid = ({
     e.target.style.fill = "transparent";
   };
 
-  const halfLength = (gridWidth - 2 * padding) / 2;
+  const halfHeight = (gridHeight - 2 * padding) / 2;
+  const halfWidth = (gridWidth - 2 * padding) / 2;
 
   const hasAddedMaxIcons =
     addableIcon &&
@@ -112,7 +113,7 @@ const CoordinateGrid = ({
               key={value}
               transform={`translate(${xOffset}, ${gridHeight / 2})`}
             >
-              <line y1={-halfLength} y2={halfLength} stroke="silver" />
+              <line y1={-halfHeight} y2={halfHeight} stroke="silver" />
               {showXLabels && (
                 <text
                   key={value}
@@ -134,7 +135,7 @@ const CoordinateGrid = ({
               key={value}
               transform={`translate( ${gridWidth / 2}, ${yOffset})`}
             >
-              <line x1={-halfLength} x2={halfLength} stroke="silver" />
+              <line x1={-halfWidth} x2={halfWidth} stroke="silver" />
               {showYLabels && (
                 <text
                   key={value}
