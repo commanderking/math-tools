@@ -1,6 +1,6 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState } from "react";
+import { PreplacedIcon, Coordinate } from "./types";
 import * as d3Scale from "d3-scale";
-import cellTower from "../../images/cell-tower.svg";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
 type Props = {
@@ -15,17 +15,6 @@ type Props = {
   addableIcon?: AddableIcon;
   showXLabels?: boolean;
   showYLabels?: boolean;
-};
-
-type Coordinate = {
-  x: number;
-  y: number;
-};
-
-type PreplacedIcon = {
-  iconImage: string;
-  coordinates: Coordinate[];
-  iconSize: number;
 };
 
 type AddableIcon = {
@@ -163,7 +152,7 @@ const CoordinateGrid = ({
         })}
         {addableIcon &&
           !hasAddedMaxIcons &&
-          coordinates.map((coordinate: any) => {
+          coordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             return (
               <circle
@@ -185,7 +174,6 @@ const CoordinateGrid = ({
             const { coordinates, iconImage, iconSize } = preplacedIcon;
             return coordinates.map((coordinate: Coordinate) => {
               const { x, y } = coordinate;
-              console.log("coordinate", coordinate);
               return (
                 <image
                   href={iconImage}
