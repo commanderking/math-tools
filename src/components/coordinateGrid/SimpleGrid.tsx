@@ -4,13 +4,20 @@ import { PreplacedIcon } from "./types";
 type Props = {
   gridWidth?: number;
   gridHeight?: number;
-  // icon coordinates start at (0,0) and move in the positive direction
-  preplacedIcons: PreplacedIcon[];
+  /**
+   * Coordinates for icons to display on grid
+   * PreplacedIcon = {
+   * iconImage: string;
+   * coordinates: Coordinate[];
+   * iconSize: number;
+   * }
+   */
+  preplacedIcons?: PreplacedIcon[];
   dimensions?: [number, number];
 };
 
 const SimpleGrid = ({
-  preplacedIcons,
+  preplacedIcons = [],
   gridWidth = 300,
   gridHeight = 300,
   dimensions = [5, 5],
