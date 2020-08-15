@@ -1,11 +1,13 @@
 import React from "react";
 import { SimpleGrid } from "./SimpleGrid";
 import homeIcon from "../../images/home-icon.svg";
-import { withKnobs, number, select, boolean } from "@storybook/addon-knobs";
+import { withKnobs, number } from "@storybook/addon-knobs";
+import { withInfo } from "@storybook/addon-info";
+
 export default {
   component: SimpleGrid,
   title: "Simple Grid",
-  decorators: [withKnobs],
+  decorators: [withInfo, withKnobs],
 };
 
 export const Basic = () => {

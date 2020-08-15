@@ -1,6 +1,8 @@
 ## Open Math Tools
 
-A component library to help create more effective math learing experiences
+A component library to help create more effective math learning experiences
+
+> <a href="https://open-math-tools.netlify.app">View Components / Storybook</a>
 
 To see components locally, run:
 

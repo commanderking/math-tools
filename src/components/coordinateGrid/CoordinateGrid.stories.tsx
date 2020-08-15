@@ -2,11 +2,13 @@ import React from "react";
 import { CoordinateGrid } from "./CoordinateGrid";
 import homeIcon from "../../images/home-icon.svg";
 import { withKnobs, number, select, boolean } from "@storybook/addon-knobs";
+import { withInfo } from "@storybook/addon-info";
+
 import cellTower from "../../images/cell-tower.svg";
 export default {
   component: CoordinateGrid,
   title: "Coordinate Grid",
-  decorators: [withKnobs],
+  decorators: [withInfo, withKnobs],
 };
 
 const gridDimension = 500;
