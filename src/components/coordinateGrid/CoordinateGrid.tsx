@@ -5,7 +5,6 @@ import * as d3Scale from "d3-scale";
 
 type Props = {
   id: string;
-  // Height in pixels of grid
   gridHeight: number;
   gridWidth: number;
   preplacedIcons?: PreplacedIcon[];
