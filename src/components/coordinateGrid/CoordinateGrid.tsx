@@ -177,16 +177,27 @@ const CoordinateGrid = ({
           preplacedIcons.map((preplacedIcon: PreplacedIcon) => {
             const { coordinates, iconImage, iconSize } = preplacedIcon;
             return coordinates.map((coordinate: Coordinate) => {
-              const { x, y } = coordinate;
+              const { x, y, label } = coordinate;
               return (
-                <image
-                  href={iconImage}
-                  x={xScale(x) - iconSize / 2}
-                  y={yScale(y) - iconSize / 2}
-                  width={iconSize}
-                  height={iconSize}
-                  xlinkHref={iconImage}
-                />
+                <React.Fragment>
+                  <image
+                    href={iconImage}
+                    x={xScale(x) - iconSize / 2}
+                    y={yScale(y) - iconSize / 2}
+                    width={iconSize}
+                    height={iconSize}
+                    xlinkHref={iconImage}
+                  />
+                  {label && (
+                    <text
+                      x={xScale(x) - iconSize}
+                      y={yScale(y) - iconSize / 2}
+                      fontSize={iconSize}
+                    >
+                      {label}
+                    </text>
+                  )}
+                </React.Fragment>
               );
             });
           })}
