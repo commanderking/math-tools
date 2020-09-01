@@ -21,11 +21,11 @@ export const WithIcons = () => (
     preplacedIcons={[
       {
         iconImage: homeIcon,
-        iconSize: number("iconSize", 15),
+        iconSize: number("iconSize", 20),
         coordinates: [
           { x: 0, y: 0 },
-          { x: 2, y: 2 },
-          { x: 3, y: 4 },
+          { x: 2, y: 2, label: "B" },
+          { x: 3, y: 4, label: "A" },
         ],
       },
     ]}
