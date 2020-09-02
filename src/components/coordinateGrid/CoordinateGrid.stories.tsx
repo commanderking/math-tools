@@ -1,7 +1,13 @@
 import React from "react";
 import { CoordinateGrid } from "./CoordinateGrid";
 import homeIcon from "../../images/home-icon.svg";
-import { withKnobs, number, select, boolean } from "@storybook/addon-knobs";
+import {
+  withKnobs,
+  number,
+  select,
+  boolean,
+  text,
+} from "@storybook/addon-knobs";
 import cellTower from "../../images/cell-tower.svg";
 export default {
   component: CoordinateGrid,
@@ -37,10 +43,11 @@ export const PreplacedIcons = () => (
           {
             x: number("Icon x-coordinate", 1),
             y: number("Icon y-coordinate", 2),
+            label: text("Coordinate Label", "B"),
           },
-          { x: 5, y: 9 },
-          { x: -5, y: -2 },
-          { x: -3, y: -4 },
+          { x: 5, y: 9, label: "A" },
+          { x: -5, y: -2, label: "C" },
+          { x: -3, y: -4, label: "D" },
         ],
       },
     ]}
