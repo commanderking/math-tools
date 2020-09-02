@@ -1,7 +1,7 @@
 import React from "react";
 import { SimpleGrid } from "./SimpleGrid";
 import homeIcon from "../../images/home-icon.svg";
-import { withKnobs, number, select, boolean } from "@storybook/addon-knobs";
+import { withKnobs, number, text } from "@storybook/addon-knobs";
 export default {
   component: SimpleGrid,
   title: "Simple Grid",
@@ -24,8 +24,8 @@ export const WithIcons = () => (
         iconSize: number("iconSize", 20),
         coordinates: [
           { x: 0, y: 0 },
-          { x: 2, y: 2, label: "B" },
-          { x: 3, y: 4, label: "A" },
+          { x: 2, y: 2, label: text("Coordinate Label - B", "B") },
+          { x: 3, y: 4, label: text("Coordinate Label - A", "A") },
         ],
       },
     ]}
