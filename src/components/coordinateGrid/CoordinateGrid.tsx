@@ -21,7 +21,16 @@ type AddableIcon = {
   iconImage: string;
   iconSize: number;
   maxIcons?: number;
+
+  /*
+   * Override internal tracking of coordinates
+   */
+  coordinates?: Coordinate[];
+  onAddIcon?: (coordinate: Coordinate) => void;
+  onAddedIconClick?: (coordinate: Coordinate) => void;
 };
+
+const noop = () => {};
 
 const createCoordinates = (
   xDomain: [number, number],
@@ -59,9 +68,15 @@ const CoordinateGrid = ({
   showXLabels = true,
   showYLabels = true,
 }: Props) => {
-  const [addedIcons, setAddedIcons] = useState<
-    { x: number; y: number; key: string }[]
-  >([]);
+  const {
+    coordinates: userControlledAddedCoordinates = undefined,
+    onAddIcon = noop,
+    onAddedIconClick = noop,
+  } = addableIcon || {};
+  const [addedIconsInternal, setAddedIcons] = useState<Coordinate[]>([]);
+
+  const addedIconCoordinates =
+    userControlledAddedCoordinates || addedIconsInternal;
 
   const padding = 10;
 
@@ -85,7 +100,7 @@ const CoordinateGrid = ({
     yOffset: yScale(value),
   }));
 
-  const coordinates = createCoordinates(xDomain, yDomain);
+  const initialAvailableCoordinates = createCoordinates(xDomain, yDomain);
 
   const getCoordinateKey = (coordinate: { x: number; y: number }) => {
     return `${coordinate.x}-${coordinate.y}`;
@@ -105,7 +120,7 @@ const CoordinateGrid = ({
   const hasAddedMaxIcons =
     addableIcon &&
     addableIcon.maxIcons &&
-    addedIcons.length >= addableIcon.maxIcons;
+    addedIconCoordinates.length >= addableIcon.maxIcons;
 
   return (
     <svg width={gridWidth} height={gridHeight}>
@@ -156,7 +171,7 @@ const CoordinateGrid = ({
         })}
         {addableIcon &&
           !hasAddedMaxIcons &&
-          coordinates.map((coordinate: Coordinate) => {
+          initialAvailableCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             return (
               <circle
@@ -168,7 +183,15 @@ const CoordinateGrid = ({
                 onMouseOver={fillCircle}
                 onMouseOut={removeCircle}
                 onClick={() => {
-                  setAddedIcons([...addedIcons, { x, y, key: `${x}-${y}` }]);
+                  const coordinate = { x, y, key: `${x}-${y}` };
+                  if (userControlledAddedCoordinates) {
+                    onAddIcon(coordinate);
+                    return;
+                  }
+                  setAddedIcons([
+                    ...addedIconsInternal,
+                    { x, y, key: `${x}-${y}` },
+                  ]);
                 }}
               />
             );
@@ -202,7 +225,7 @@ const CoordinateGrid = ({
             });
           })}
         {addableIcon &&
-          addedIcons.map((coordinate: Coordinate) => {
+          addedIconCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             const { iconSize, iconImage } = addableIcon;
             return (
@@ -212,11 +235,16 @@ const CoordinateGrid = ({
                 y={yScale(y) - iconSize / 2}
                 width={iconSize}
                 height={iconSize}
-                style={{ fill: "blue" }}
                 xlinkHref={iconImage}
                 onClick={() => {
-                  const updatedAddedIcons = addedIcons.filter(
-                    (icon) => icon.key !== `${x}-${y}`
+                  const iconKey = `${x}-${y}`;
+
+                  if (userControlledAddedCoordinates) {
+                    onAddedIconClick({ ...coordinate, key: iconKey });
+                    return;
+                  }
+                  const updatedAddedIcons = addedIconsInternal.filter(
+                    (icon) => icon.key !== iconKey
                   );
                   setAddedIcons(updatedAddedIcons);
                 }}

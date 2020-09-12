@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { CoordinateGrid } from "./CoordinateGrid";
 import homeIcon from "../../images/home-icon.svg";
 import {
@@ -9,6 +9,8 @@ import {
   text,
 } from "@storybook/addon-knobs";
 import cellTower from "../../images/cell-tower.svg";
+import { Coordinate } from "./types";
+
 export default {
   component: CoordinateGrid,
   title: "Coordinate Grid",
@@ -68,6 +70,46 @@ export const AddableIcons = () => {
         ),
         iconSize: number("Icon Size", 20),
         maxIcons: number("Max Number of Icons", 5),
+      }}
+    />
+  );
+};
+
+export const AddableControlledIcons = () => {
+  const [coordinates, setCoordinates] = useState<Coordinate[]>([]);
+  const handleAddIcon = (coordinate: Coordinate) => {
+    console.log("clicking to add icon");
+    setCoordinates([...coordinates, coordinate]);
+  };
+
+  const handleAddableIconClick = (coordinate: Coordinate) => {
+    const newCoordinates = coordinates.filter(
+      (currentCoordinate: Coordinate) =>
+        !(
+          currentCoordinate.x === coordinate.x &&
+          currentCoordinate.y === coordinate.y
+        )
+    );
+
+    setCoordinates(newCoordinates);
+  };
+
+  return (
+    <CoordinateGrid
+      id="AddableIcons"
+      gridHeight={gridDimension}
+      gridWidth={gridDimension}
+      addableIcon={{
+        iconImage: select(
+          "Icon Image",
+          { CellTower: cellTower, Home: homeIcon },
+          cellTower
+        ),
+        iconSize: number("Icon Size", 20),
+        maxIcons: number("Max Number of Icons", 5),
+        coordinates: coordinates,
+        onAddIcon: handleAddIcon,
+        onAddedIconClick: handleAddableIconClick,
       }}
     />
   );
