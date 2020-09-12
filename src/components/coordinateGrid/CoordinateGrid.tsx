@@ -184,14 +184,14 @@ const CoordinateGrid = ({
                 onMouseOut={removeCircle}
                 onClick={() => {
                   const coordinate = { x, y, key: `${x}-${y}` };
-                  if (userControlledAddedCoordinates) {
-                    onAddIcon(coordinate);
-                    return;
+                  if (!userControlledAddedCoordinates) {
+                    setAddedIcons([
+                      ...addedIconsInternal,
+                      { x, y, key: `${x}-${y}` },
+                    ]);
                   }
-                  setAddedIcons([
-                    ...addedIconsInternal,
-                    { x, y, key: `${x}-${y}` },
-                  ]);
+
+                  onAddIcon(coordinate);
                 }}
               />
             );
@@ -204,6 +204,7 @@ const CoordinateGrid = ({
               return (
                 <React.Fragment>
                   <image
+                    key={`preplaced-icon-${x}-${y}`}
                     href={iconImage}
                     x={xScale(x) - iconSize / 2}
                     y={yScale(y) - iconSize / 2}
@@ -213,6 +214,7 @@ const CoordinateGrid = ({
                   />
                   {label && (
                     <text
+                      key={`preplaced-icon-label-${x}-${y}`}
                       x={xScale(x) - iconSize}
                       y={yScale(y) - iconSize / 2}
                       fontSize={iconSize}
@@ -230,6 +232,7 @@ const CoordinateGrid = ({
             const { iconSize, iconImage } = addableIcon;
             return (
               <image
+                key={`addable-icon-coordinate-${x}-${y}`}
                 href={iconImage}
                 x={xScale(x) - iconSize / 2}
                 y={yScale(y) - iconSize / 2}
@@ -239,14 +242,13 @@ const CoordinateGrid = ({
                 onClick={() => {
                   const iconKey = `${x}-${y}`;
 
-                  if (userControlledAddedCoordinates) {
-                    onAddedIconClick({ ...coordinate, key: iconKey });
-                    return;
+                  if (!userControlledAddedCoordinates) {
+                    const updatedAddedIcons = addedIconsInternal.filter(
+                      (icon) => icon.key !== iconKey
+                    );
+                    setAddedIcons(updatedAddedIcons);
                   }
-                  const updatedAddedIcons = addedIconsInternal.filter(
-                    (icon) => icon.key !== iconKey
-                  );
-                  setAddedIcons(updatedAddedIcons);
+                  onAddedIconClick({ ...coordinate, key: iconKey });
                 }}
               />
             );

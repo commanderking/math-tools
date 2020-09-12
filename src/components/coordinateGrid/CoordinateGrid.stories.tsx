@@ -10,6 +10,7 @@ import {
 } from "@storybook/addon-knobs";
 import cellTower from "../../images/cell-tower.svg";
 import { Coordinate } from "./types";
+import { action } from "@storybook/addon-actions";
 
 export default {
   component: CoordinateGrid,
@@ -70,6 +71,8 @@ export const AddableIcons = () => {
         ),
         iconSize: number("Icon Size", 20),
         maxIcons: number("Max Number of Icons", 5),
+        onAddIcon: action("Added Icon"),
+        onAddedIconClick: action("Remove Icon"),
       }}
     />
   );
@@ -78,7 +81,6 @@ export const AddableIcons = () => {
 export const AddableControlledIcons = () => {
   const [coordinates, setCoordinates] = useState<Coordinate[]>([]);
   const handleAddIcon = (coordinate: Coordinate) => {
-    console.log("clicking to add icon");
     setCoordinates([...coordinates, coordinate]);
   };
 
