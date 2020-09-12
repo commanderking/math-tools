@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { PreplacedIcon, Coordinate } from "./types";
+import { PreplacedIcon, Coordinate, AddableIcon } from "./types";
 import * as d3Scale from "d3-scale";
+import { createCoordinates, getCoordinateKey, noop } from "./utils";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
 type Props = {
@@ -20,44 +21,6 @@ type Props = {
   addableIcon?: AddableIcon;
   showXLabels?: boolean;
   showYLabels?: boolean;
-};
-
-type AddableIcon = {
-  iconImage: string;
-  iconSize: number;
-  maxIcons?: number;
-
-  /*
-   * Override internal tracking of coordinates
-   */
-  coordinates?: Coordinate[];
-  onAddIcon?: (coordinate: Coordinate) => void;
-  onAddedIconClick?: (coordinate: Coordinate) => void;
-};
-
-const noop = () => {};
-
-const createCoordinates = (
-  xDomain: [number, number],
-  yDomain: [number, number]
-) => {
-  let xCoordinates = [];
-  for (let i = xDomain[0]; i <= xDomain[1]; i++) {
-    xCoordinates.push(i);
-  }
-
-  let yCoordinates: number[] = [];
-  for (let i = yDomain[0]; i <= yDomain[1]; i++) {
-    yCoordinates.push(i);
-  }
-  let coordinates: Coordinate[] = [];
-  xCoordinates.forEach((x: number) => {
-    yCoordinates.forEach((y: number) => {
-      coordinates.push({ x, y });
-    });
-  });
-
-  return coordinates;
 };
 
 const CoordinateGrid = ({
@@ -106,10 +69,6 @@ const CoordinateGrid = ({
   }));
 
   const clickableCoordinates = createCoordinates(xDomain, yDomain);
-
-  const getCoordinateKey = (coordinate: { x: number; y: number }) => {
-    return `${coordinate.x}-${coordinate.y}`;
-  };
 
   const fillCircle = (e: any) => {
     e.target.style.fill = "orange";

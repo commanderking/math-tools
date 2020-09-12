@@ -10,3 +10,16 @@ export type PreplacedIcon = {
   coordinates: Coordinate[];
   iconSize: number;
 };
+
+export type AddableIcon = {
+  iconImage: string;
+  iconSize: number;
+  maxIcons?: number;
+
+  /*
+   * Override internal tracking of coordinates
+   */
+  coordinates?: Coordinate[];
+  onAddIcon?: (coordinate: Coordinate) => void;
+  onAddedIconClick?: (coordinate: Coordinate) => void;
+};
