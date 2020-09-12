@@ -12,6 +12,11 @@ type Props = {
   xTicksNumber?: number;
   yDomain?: [number, number];
   yTicksNumber?: number;
+  /**
+   * Object with props that affect the icon that's currently addable
+   * including attributes of the icon (size, image, max), but also behavior such as event handlers for adding and clicking the added icon. Can also override
+   * internal control of which icons have been added by providing custom coordinates
+   */
   addableIcon?: AddableIcon;
   showXLabels?: boolean;
   showYLabels?: boolean;
@@ -100,7 +105,7 @@ const CoordinateGrid = ({
     yOffset: yScale(value),
   }));
 
-  const initialAvailableCoordinates = createCoordinates(xDomain, yDomain);
+  const clickableCoordinates = createCoordinates(xDomain, yDomain);
 
   const getCoordinateKey = (coordinate: { x: number; y: number }) => {
     return `${coordinate.x}-${coordinate.y}`;
@@ -171,7 +176,7 @@ const CoordinateGrid = ({
         })}
         {addableIcon &&
           !hasAddedMaxIcons &&
-          initialAvailableCoordinates.map((coordinate: Coordinate) => {
+          clickableCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             return (
               <circle
