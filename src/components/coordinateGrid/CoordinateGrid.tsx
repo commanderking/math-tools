@@ -12,6 +12,11 @@ type Props = {
   xTicksNumber?: number;
   yDomain?: [number, number];
   yTicksNumber?: number;
+  /**
+   * Object with props that affect the icon that's currently addable
+   * including attributes of the icon (size, image, max), but also behavior such as event handlers for adding and clicking the added icon. Can also override
+   * internal control of which icons have been added by providing custom coordinates
+   */
   addableIcon?: AddableIcon;
   showXLabels?: boolean;
   showYLabels?: boolean;
@@ -21,7 +26,16 @@ type AddableIcon = {
   iconImage: string;
   iconSize: number;
   maxIcons?: number;
+
+  /*
+   * Override internal tracking of coordinates
+   */
+  coordinates?: Coordinate[];
+  onAddIcon?: (coordinate: Coordinate) => void;
+  onAddedIconClick?: (coordinate: Coordinate) => void;
 };
+
+const noop = () => {};
 
 const createCoordinates = (
   xDomain: [number, number],
@@ -59,9 +73,15 @@ const CoordinateGrid = ({
   showXLabels = true,
   showYLabels = true,
 }: Props) => {
-  const [addedIcons, setAddedIcons] = useState<
-    { x: number; y: number; key: string }[]
-  >([]);
+  const {
+    coordinates: userControlledAddedCoordinates = undefined,
+    onAddIcon = noop,
+    onAddedIconClick = noop,
+  } = addableIcon || {};
+  const [addedIconsInternal, setAddedIcons] = useState<Coordinate[]>([]);
+
+  const addedIconCoordinates =
+    userControlledAddedCoordinates || addedIconsInternal;
 
   const padding = 10;
 
@@ -85,7 +105,7 @@ const CoordinateGrid = ({
     yOffset: yScale(value),
   }));
 
-  const coordinates = createCoordinates(xDomain, yDomain);
+  const clickableCoordinates = createCoordinates(xDomain, yDomain);
 
   const getCoordinateKey = (coordinate: { x: number; y: number }) => {
     return `${coordinate.x}-${coordinate.y}`;
@@ -105,7 +125,7 @@ const CoordinateGrid = ({
   const hasAddedMaxIcons =
     addableIcon &&
     addableIcon.maxIcons &&
-    addedIcons.length >= addableIcon.maxIcons;
+    addedIconCoordinates.length >= addableIcon.maxIcons;
 
   return (
     <svg width={gridWidth} height={gridHeight}>
@@ -156,7 +176,7 @@ const CoordinateGrid = ({
         })}
         {addableIcon &&
           !hasAddedMaxIcons &&
-          coordinates.map((coordinate: Coordinate) => {
+          clickableCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             return (
               <circle
@@ -168,7 +188,15 @@ const CoordinateGrid = ({
                 onMouseOver={fillCircle}
                 onMouseOut={removeCircle}
                 onClick={() => {
-                  setAddedIcons([...addedIcons, { x, y, key: `${x}-${y}` }]);
+                  const coordinate = { x, y, key: `${x}-${y}` };
+                  if (!userControlledAddedCoordinates) {
+                    setAddedIcons([
+                      ...addedIconsInternal,
+                      { x, y, key: `${x}-${y}` },
+                    ]);
+                  }
+
+                  onAddIcon(coordinate);
                 }}
               />
             );
@@ -181,6 +209,7 @@ const CoordinateGrid = ({
               return (
                 <React.Fragment>
                   <image
+                    key={`preplaced-icon-${x}-${y}`}
                     href={iconImage}
                     x={xScale(x) - iconSize / 2}
                     y={yScale(y) - iconSize / 2}
@@ -190,6 +219,7 @@ const CoordinateGrid = ({
                   />
                   {label && (
                     <text
+                      key={`preplaced-icon-label-${x}-${y}`}
                       x={xScale(x) - iconSize}
                       y={yScale(y) - iconSize / 2}
                       fontSize={iconSize}
@@ -202,23 +232,28 @@ const CoordinateGrid = ({
             });
           })}
         {addableIcon &&
-          addedIcons.map((coordinate: Coordinate) => {
+          addedIconCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
             const { iconSize, iconImage } = addableIcon;
             return (
               <image
+                key={`addable-icon-coordinate-${x}-${y}`}
                 href={iconImage}
                 x={xScale(x) - iconSize / 2}
                 y={yScale(y) - iconSize / 2}
                 width={iconSize}
                 height={iconSize}
-                style={{ fill: "blue" }}
                 xlinkHref={iconImage}
                 onClick={() => {
-                  const updatedAddedIcons = addedIcons.filter(
-                    (icon) => icon.key !== `${x}-${y}`
-                  );
-                  setAddedIcons(updatedAddedIcons);
+                  const iconKey = `${x}-${y}`;
+
+                  if (!userControlledAddedCoordinates) {
+                    const updatedAddedIcons = addedIconsInternal.filter(
+                      (icon) => icon.key !== iconKey
+                    );
+                    setAddedIcons(updatedAddedIcons);
+                  }
+                  onAddedIconClick({ ...coordinate, key: iconKey });
                 }}
               />
             );
