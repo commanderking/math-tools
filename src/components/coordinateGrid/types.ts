@@ -23,3 +23,24 @@ export type AddableIcon = {
   onAddIcon?: (coordinate: Coordinate) => void;
   onAddedIconClick?: (coordinate: Coordinate) => void;
 };
+
+type CurrentIcon = {
+  image: string;
+  size: number;
+};
+
+export type PlacedIcon = {
+  x: number;
+  y: number;
+  label?: string;
+  key?: string;
+  image: string;
+  size: number;
+  canRemove?: boolean;
+  onClick?: () => void;
+};
+
+export type DefaultIconConfig = {
+  size: number;
+  image?: String;
+};

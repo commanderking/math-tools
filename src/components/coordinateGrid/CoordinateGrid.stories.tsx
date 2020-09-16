@@ -33,29 +33,28 @@ export const Basic = () => (
   />
 );
 
-export const PreplacedIcons = () => (
-  <CoordinateGrid
-    id="PreplacedIconsGrid"
-    gridHeight={gridDimension}
-    gridWidth={gridDimension}
-    preplacedIcons={[
-      {
-        iconImage: homeIcon,
-        iconSize: number("iconSize", 15),
-        coordinates: [
-          {
-            x: number("Icon x-coordinate", 1),
-            y: number("Icon y-coordinate", 2),
-            label: text("Coordinate Label", "B"),
-          },
-          { x: 5, y: 9, label: "A" },
-          { x: -5, y: -2, label: "C" },
-          { x: -3, y: -4, label: "D" },
-        ],
-      },
-    ]}
-  />
-);
+export const PreplacedIcons = () => {
+  const size = number("Icon Size", 15);
+  const image = homeIcon;
+  return (
+    <CoordinateGrid
+      id="PreplacedIconsGrid"
+      gridHeight={gridDimension}
+      gridWidth={gridDimension}
+      initialIcons={[
+        {
+          x: number("Icon x-coordinate", 1),
+          y: number("Icon y-coordinate", 2),
+          label: text("Coordinate Label", "B"),
+          size: 15,
+        },
+        { x: 5, y: 9, label: "A", size, image },
+        { x: -5, y: -2, label: "C", size, image },
+        { x: -3, y: -4, label: "D", size, image },
+      ]}
+    />
+  );
+};
 
 export const AddableIcons = () => {
   return (
