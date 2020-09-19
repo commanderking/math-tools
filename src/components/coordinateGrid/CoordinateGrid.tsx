@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  PreplacedIcon,
-  Coordinate,
-  AddableIcon,
-  PlacedIcon,
-  DefaultIconConfig,
-} from "./types";
+import { Coordinate, AddableIcon, PlacedIcon } from "./types";
 import * as d3Scale from "d3-scale";
 import { createCoordinates, getCoordinateKey, noop } from "./utils";
 import { number } from "@storybook/addon-knobs";
@@ -15,7 +9,6 @@ type Props = {
   id: string;
   gridHeight: number;
   gridWidth: number;
-  // preplacedIcons?: PreplacedIcon[];
   xDomain?: [number, number];
   xTicksNumber?: number;
   yDomain?: [number, number];
@@ -30,7 +23,8 @@ type Props = {
   showYLabels?: boolean;
   initialIcons?: PlacedIcon[];
   // Only use if you as a developer want complete control over the coordinates placed
-  allIcons?: PlacedIcon[];
+  // Overrides internal state in terms of which icons to show
+  activeIcons?: PlacedIcon[];
 };
 
 const CoordinateGrid = ({
@@ -45,20 +39,15 @@ const CoordinateGrid = ({
   showYLabels = true,
   initialIcons = [],
   addableIcon,
-  allIcons,
+  activeIcons,
 }: Props) => {
-  // const {
-  //   coordinates: userControlledAddedCoordinates = undefined,
-  //   onAddIcon = noop,
-  //   onAddedIconClick = noop,
-  // } = addableIcon || {};
+  const { onAddIcon = noop, onAddedIconClick = noop } = addableIcon || {};
   const [addedIconsInternal, setAddedIcons] = useState<PlacedIcon[]>(
     initialIcons
   );
 
-  const addedIcons = allIcons || addedIconsInternal;
+  const addedIcons = activeIcons || addedIconsInternal;
 
-  console.log("addedIcons", addedIcons);
   const padding = 10;
 
   const xScale = d3Scale
@@ -150,6 +139,14 @@ const CoordinateGrid = ({
           !hasAddedMaxIcons &&
           clickableCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
+            const { image, size } = addableIcon;
+            const currentIcon = {
+              x,
+              y,
+              key: `${x}-${y}`,
+              size,
+              image,
+            };
             return (
               <circle
                 key={getCoordinateKey(coordinate)}
@@ -161,14 +158,11 @@ const CoordinateGrid = ({
                 onMouseOut={removeCircle}
                 onClick={() => {
                   const coordinate = { x, y, key: `${x}-${y}` };
-                  if (!allIcons) {
-                    setAddedIcons([
-                      ...addedIconsInternal,
-                      { x, y, key: `${x}-${y}` },
-                    ]);
+                  if (!activeIcons) {
+                    setAddedIcons([...addedIconsInternal, currentIcon]);
                   }
 
-                  // onAddIcon(coordinate);
+                  onAddIcon(currentIcon);
                 }}
               />
             );
@@ -203,33 +197,31 @@ const CoordinateGrid = ({
               );
             });
           })} */}
-        {addableIcon &&
-          addedIcons.map((coordinate: Coordinate) => {
-            const { x, y } = coordinate;
-            const { iconSize, iconImage } = addableIcon;
-            return (
-              <image
-                key={`addable-icon-coordinate-${x}-${y}`}
-                href={iconImage}
-                x={xScale(x) - iconSize / 2}
-                y={yScale(y) - iconSize / 2}
-                width={iconSize}
-                height={iconSize}
-                xlinkHref={iconImage}
-                onClick={() => {
-                  const iconKey = `${x}-${y}`;
+        {addedIcons.map((icon: PlacedIcon) => {
+          const { x, y, image, size } = icon;
+          return (
+            <image
+              key={`addable-icon-coordinate-${x}-${y}`}
+              href={image}
+              x={xScale(x) - size / 2}
+              y={yScale(y) - size / 2}
+              width={size}
+              height={size}
+              xlinkHref={image}
+              onClick={() => {
+                const iconKey = `${x}-${y}`;
 
-                  if (!allIcons) {
-                    const updatedAddedIcons = addedIconsInternal.filter(
-                      (icon) => icon.key !== iconKey
-                    );
-                    setAddedIcons(updatedAddedIcons);
-                  }
-                  // onAddedIconClick({ ...coordinate, key: iconKey });
-                }}
-              />
-            );
-          })}
+                if (!activeIcons) {
+                  const updatedAddedIcons = addedIconsInternal.filter(
+                    (icon) => icon.key !== iconKey
+                  );
+                  setAddedIcons(updatedAddedIcons);
+                }
+                onAddedIconClick(icon);
+              }}
+            />
+          );
+        })}
       </g>
     </svg>
   );

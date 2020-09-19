@@ -12,16 +12,11 @@ export type PreplacedIcon = {
 };
 
 export type AddableIcon = {
-  iconImage: string;
-  iconSize: number;
+  image: string;
+  size: number;
   maxIcons?: number;
-
-  /*
-   * Override internal tracking of coordinates
-   */
-  coordinates?: Coordinate[];
-  onAddIcon?: (coordinate: Coordinate) => void;
-  onAddedIconClick?: (coordinate: Coordinate) => void;
+  onAddIcon?: (icon: PlacedIcon) => void;
+  onAddedIconClick?: (icon: PlacedIcon) => void;
 };
 
 type CurrentIcon = {
@@ -38,9 +33,4 @@ export type PlacedIcon = {
   size: number;
   canRemove?: boolean;
   onClick?: () => void;
-};
-
-export type DefaultIconConfig = {
-  size: number;
-  image?: String;
 };
