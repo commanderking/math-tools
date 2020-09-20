@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Coordinate, AddableIcon, PlacedIcon } from "./types";
 import * as d3Scale from "d3-scale";
 import { createCoordinates, getCoordinateKey, noop } from "./utils";
-import { number } from "@storybook/addon-knobs";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
 type Props = {
@@ -21,9 +20,14 @@ type Props = {
   addableIcon?: AddableIcon;
   showXLabels?: boolean;
   showYLabels?: boolean;
+  /*
+   * Set of initial icons that will be placed on render
+   */
   initialIcons?: PlacedIcon[];
-  // Only use if you as a developer want complete control over the coordinates placed
-  // Overrides internal state in terms of which icons to show
+  /*
+   * Only use if you as a developer want complete control over the coordinates placed
+   * Overrides internal state in terms of which icons to show
+   */
   activeIcons?: PlacedIcon[];
 };
 
@@ -157,7 +161,6 @@ const CoordinateGrid = ({
                 onMouseOver={fillCircle}
                 onMouseOut={removeCircle}
                 onClick={() => {
-                  const coordinate = { x, y, key: `${x}-${y}` };
                   if (!activeIcons) {
                     setAddedIcons([...addedIconsInternal, currentIcon]);
                   }
@@ -167,36 +170,6 @@ const CoordinateGrid = ({
               />
             );
           })}
-        {/* {preplacedIcons &&
-          preplacedIcons.map((preplacedIcon: PreplacedIcon) => {
-            const { coordinates, iconImage, iconSize } = preplacedIcon;
-            return coordinates.map((coordinate: Coordinate) => {
-              const { x, y, label } = coordinate;
-              return (
-                <React.Fragment>
-                  <image
-                    key={`preplaced-icon-${x}-${y}`}
-                    href={iconImage}
-                    x={xScale(x) - iconSize / 2}
-                    y={yScale(y) - iconSize / 2}
-                    width={iconSize}
-                    height={iconSize}
-                    xlinkHref={iconImage}
-                  />
-                  {label && (
-                    <text
-                      key={`preplaced-icon-label-${x}-${y}`}
-                      x={xScale(x) - iconSize}
-                      y={yScale(y) - iconSize / 2}
-                      fontSize={iconSize}
-                    >
-                      {label}
-                    </text>
-                  )}
-                </React.Fragment>
-              );
-            });
-          })} */}
         {addedIcons.map((icon: PlacedIcon) => {
           const { x, y, image, size } = icon;
           return (

@@ -19,11 +19,6 @@ export type AddableIcon = {
   onAddedIconClick?: (icon: PlacedIcon) => void;
 };
 
-type CurrentIcon = {
-  image: string;
-  size: number;
-};
-
 export type PlacedIcon = {
   x: number;
   y: number;
@@ -31,6 +26,5 @@ export type PlacedIcon = {
   key?: string;
   image: string;
   size: number;
-  canRemove?: boolean;
   onClick?: () => void;
 };
