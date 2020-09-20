@@ -12,14 +12,19 @@ export type PreplacedIcon = {
 };
 
 export type AddableIcon = {
-  iconImage: string;
-  iconSize: number;
+  image: string;
+  size: number;
   maxIcons?: number;
+  onAddIcon?: (icon: PlacedIcon) => void;
+  onAddedIconClick?: (icon: PlacedIcon) => void;
+};
 
-  /*
-   * Override internal tracking of coordinates
-   */
-  coordinates?: Coordinate[];
-  onAddIcon?: (coordinate: Coordinate) => void;
-  onAddedIconClick?: (coordinate: Coordinate) => void;
+export type PlacedIcon = {
+  x: number;
+  y: number;
+  label?: string;
+  key?: string;
+  image: string;
+  size: number;
+  onClick?: () => void;
 };

@@ -16,18 +16,33 @@ export const Basic = () => (
   />
 );
 
-export const WithIcons = () => (
-  <SimpleGrid
-    preplacedIcons={[
-      {
-        iconImage: homeIcon,
-        iconSize: number("iconSize", 20),
-        coordinates: [
-          { x: 0, y: 0 },
-          { x: 2, y: 2, label: text("Coordinate Label - B", "B") },
-          { x: 3, y: 4, label: text("Coordinate Label - A", "A") },
-        ],
-      },
-    ]}
-  />
-);
+export const WithIcons = () => {
+  const image = homeIcon;
+  const size = number("iconSize", 20);
+  return (
+    <SimpleGrid
+      initialIcons={[
+        {
+          image,
+          size,
+          x: 0,
+          y: 0,
+        },
+        {
+          x: 2,
+          y: 2,
+          label: text("Coordinate Label - B", "B"),
+          image,
+          size,
+        },
+        {
+          x: 3,
+          y: 4,
+          label: text("Coordinate Label - A", "A"),
+          image,
+          size,
+        },
+      ]}
+    />
+  );
+};

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PreplacedIcon, Coordinate, AddableIcon } from "./types";
+import { Coordinate, AddableIcon, PlacedIcon } from "./types";
 import * as d3Scale from "d3-scale";
 import { createCoordinates, getCoordinateKey, noop } from "./utils";
 // For cell tower svg - Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
@@ -8,7 +8,6 @@ type Props = {
   id: string;
   gridHeight: number;
   gridWidth: number;
-  preplacedIcons?: PreplacedIcon[];
   xDomain?: [number, number];
   xTicksNumber?: number;
   yDomain?: [number, number];
@@ -21,30 +20,37 @@ type Props = {
   addableIcon?: AddableIcon;
   showXLabels?: boolean;
   showYLabels?: boolean;
+  /*
+   * Set of initial icons that will be placed on render
+   */
+  initialIcons?: PlacedIcon[];
+  /*
+   * Only use if you as a developer want complete control over the coordinates placed
+   * Overrides internal state in terms of which icons to show
+   */
+  activeIcons?: PlacedIcon[];
 };
 
 const CoordinateGrid = ({
   id,
-  preplacedIcons,
   gridHeight,
   gridWidth,
   xDomain = [-10, 10],
   xTicksNumber = 20,
   yDomain = [-10, 10],
   yTicksNumber = 20,
-  addableIcon,
   showXLabels = true,
   showYLabels = true,
+  initialIcons = [],
+  addableIcon,
+  activeIcons,
 }: Props) => {
-  const {
-    coordinates: userControlledAddedCoordinates = undefined,
-    onAddIcon = noop,
-    onAddedIconClick = noop,
-  } = addableIcon || {};
-  const [addedIconsInternal, setAddedIcons] = useState<Coordinate[]>([]);
+  const { onAddIcon = noop, onAddedIconClick = noop } = addableIcon || {};
+  const [addedIconsInternal, setAddedIcons] = useState<PlacedIcon[]>(
+    initialIcons
+  );
 
-  const addedIconCoordinates =
-    userControlledAddedCoordinates || addedIconsInternal;
+  const addedIcons = activeIcons || addedIconsInternal;
 
   const padding = 10;
 
@@ -84,7 +90,7 @@ const CoordinateGrid = ({
   const hasAddedMaxIcons =
     addableIcon &&
     addableIcon.maxIcons &&
-    addedIconCoordinates.length >= addableIcon.maxIcons;
+    addedIcons.length >= addableIcon.maxIcons;
 
   return (
     <svg width={gridWidth} height={gridHeight}>
@@ -137,6 +143,14 @@ const CoordinateGrid = ({
           !hasAddedMaxIcons &&
           clickableCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
+            const { image, size } = addableIcon;
+            const currentIcon = {
+              x,
+              y,
+              key: `${x}-${y}`,
+              size,
+              image,
+            };
             return (
               <circle
                 key={getCoordinateKey(coordinate)}
@@ -147,76 +161,40 @@ const CoordinateGrid = ({
                 onMouseOver={fillCircle}
                 onMouseOut={removeCircle}
                 onClick={() => {
-                  const coordinate = { x, y, key: `${x}-${y}` };
-                  if (!userControlledAddedCoordinates) {
-                    setAddedIcons([
-                      ...addedIconsInternal,
-                      { x, y, key: `${x}-${y}` },
-                    ]);
+                  if (!activeIcons) {
+                    setAddedIcons([...addedIconsInternal, currentIcon]);
                   }
 
-                  onAddIcon(coordinate);
+                  onAddIcon(currentIcon);
                 }}
               />
             );
           })}
-        {preplacedIcons &&
-          preplacedIcons.map((preplacedIcon: PreplacedIcon) => {
-            const { coordinates, iconImage, iconSize } = preplacedIcon;
-            return coordinates.map((coordinate: Coordinate) => {
-              const { x, y, label } = coordinate;
-              return (
-                <React.Fragment>
-                  <image
-                    key={`preplaced-icon-${x}-${y}`}
-                    href={iconImage}
-                    x={xScale(x) - iconSize / 2}
-                    y={yScale(y) - iconSize / 2}
-                    width={iconSize}
-                    height={iconSize}
-                    xlinkHref={iconImage}
-                  />
-                  {label && (
-                    <text
-                      key={`preplaced-icon-label-${x}-${y}`}
-                      x={xScale(x) - iconSize}
-                      y={yScale(y) - iconSize / 2}
-                      fontSize={iconSize}
-                    >
-                      {label}
-                    </text>
-                  )}
-                </React.Fragment>
-              );
-            });
-          })}
-        {addableIcon &&
-          addedIconCoordinates.map((coordinate: Coordinate) => {
-            const { x, y } = coordinate;
-            const { iconSize, iconImage } = addableIcon;
-            return (
-              <image
-                key={`addable-icon-coordinate-${x}-${y}`}
-                href={iconImage}
-                x={xScale(x) - iconSize / 2}
-                y={yScale(y) - iconSize / 2}
-                width={iconSize}
-                height={iconSize}
-                xlinkHref={iconImage}
-                onClick={() => {
-                  const iconKey = `${x}-${y}`;
+        {addedIcons.map((icon: PlacedIcon) => {
+          const { x, y, image, size } = icon;
+          return (
+            <image
+              key={`addable-icon-coordinate-${x}-${y}`}
+              href={image}
+              x={xScale(x) - size / 2}
+              y={yScale(y) - size / 2}
+              width={size}
+              height={size}
+              xlinkHref={image}
+              onClick={() => {
+                const iconKey = `${x}-${y}`;
 
-                  if (!userControlledAddedCoordinates) {
-                    const updatedAddedIcons = addedIconsInternal.filter(
-                      (icon) => icon.key !== iconKey
-                    );
-                    setAddedIcons(updatedAddedIcons);
-                  }
-                  onAddedIconClick({ ...coordinate, key: iconKey });
-                }}
-              />
-            );
-          })}
+                if (!activeIcons) {
+                  const updatedAddedIcons = addedIconsInternal.filter(
+                    (icon) => icon.key !== iconKey
+                  );
+                  setAddedIcons(updatedAddedIcons);
+                }
+                onAddedIconClick(icon);
+              }}
+            />
+          );
+        })}
       </g>
     </svg>
   );

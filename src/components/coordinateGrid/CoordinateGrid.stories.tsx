@@ -9,7 +9,7 @@ import {
   text,
 } from "@storybook/addon-knobs";
 import cellTower from "../../images/cell-tower.svg";
-import { Coordinate } from "./types";
+import { PlacedIcon } from "./types";
 import { action } from "@storybook/addon-actions";
 
 export default {
@@ -33,29 +33,29 @@ export const Basic = () => (
   />
 );
 
-export const PreplacedIcons = () => (
-  <CoordinateGrid
-    id="PreplacedIconsGrid"
-    gridHeight={gridDimension}
-    gridWidth={gridDimension}
-    preplacedIcons={[
-      {
-        iconImage: homeIcon,
-        iconSize: number("iconSize", 15),
-        coordinates: [
-          {
-            x: number("Icon x-coordinate", 1),
-            y: number("Icon y-coordinate", 2),
-            label: text("Coordinate Label", "B"),
-          },
-          { x: 5, y: 9, label: "A" },
-          { x: -5, y: -2, label: "C" },
-          { x: -3, y: -4, label: "D" },
-        ],
-      },
-    ]}
-  />
-);
+export const PreplacedIcons = () => {
+  const size = number("Icon Size", 15);
+  const image = homeIcon;
+  return (
+    <CoordinateGrid
+      id="PreplacedIconsGrid"
+      gridHeight={gridDimension}
+      gridWidth={gridDimension}
+      initialIcons={[
+        {
+          x: number("Icon x-coordinate", 1),
+          y: number("Icon y-coordinate", 2),
+          label: text("Coordinate Label", "B"),
+          size: 15,
+          image,
+        },
+        { x: 5, y: 9, label: "A", size, image },
+        { x: -5, y: -2, label: "C", size, image },
+        { x: -3, y: -4, label: "D", size, image },
+      ]}
+    />
+  );
+};
 
 export const AddableIcons = () => {
   return (
@@ -64,12 +64,12 @@ export const AddableIcons = () => {
       gridHeight={gridDimension}
       gridWidth={gridDimension}
       addableIcon={{
-        iconImage: select(
+        image: select(
           "Icon Image",
           { CellTower: cellTower, Home: homeIcon },
           cellTower
         ),
-        iconSize: number("Icon Size", 20),
+        size: number("Icon Size", 20),
         maxIcons: number("Max Number of Icons", 5),
         onAddIcon: action("Added Icon"),
         onAddedIconClick: action("Remove Icon"),
@@ -79,21 +79,18 @@ export const AddableIcons = () => {
 };
 
 export const AddableControlledIcons = () => {
-  const [coordinates, setCoordinates] = useState<Coordinate[]>([]);
-  const handleAddIcon = (coordinate: Coordinate) => {
-    setCoordinates([...coordinates, coordinate]);
+  const [activeIcons, setActiveIcons] = useState<PlacedIcon[]>([]);
+  const handleAddIcon = (icon: PlacedIcon) => {
+    setActiveIcons([...activeIcons, icon]);
   };
 
-  const handleAddableIconClick = (coordinate: Coordinate) => {
-    const newCoordinates = coordinates.filter(
-      (currentCoordinate: Coordinate) =>
-        !(
-          currentCoordinate.x === coordinate.x &&
-          currentCoordinate.y === coordinate.y
-        )
+  const handleAddableIconClick = (clickedIcon: PlacedIcon) => {
+    const newCoordinates = activeIcons.filter(
+      (currentIcon: PlacedIcon) =>
+        !(currentIcon.x === clickedIcon.x && currentIcon.y === clickedIcon.y)
     );
 
-    setCoordinates(newCoordinates);
+    setActiveIcons(newCoordinates);
   };
 
   return (
@@ -102,17 +99,17 @@ export const AddableControlledIcons = () => {
       gridHeight={gridDimension}
       gridWidth={gridDimension}
       addableIcon={{
-        iconImage: select(
+        image: select(
           "Icon Image",
           { CellTower: cellTower, Home: homeIcon },
           cellTower
         ),
-        iconSize: number("Icon Size", 20),
+        size: number("Icon Size", 20),
         maxIcons: number("Max Number of Icons", 5),
-        coordinates: coordinates,
         onAddIcon: handleAddIcon,
         onAddedIconClick: handleAddableIconClick,
       }}
+      activeIcons={activeIcons}
     />
   );
 };

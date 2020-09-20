@@ -1,23 +1,15 @@
 import React from "react";
 import { CoordinateGrid } from "./CoordinateGrid";
-import { PreplacedIcon } from "./types";
+import { PlacedIcon } from "./types";
 type Props = {
   gridWidth?: number;
   gridHeight?: number;
-  /**
-   * Coordinates for icons to display on grid
-   * PreplacedIcon = {
-   * iconImage: string;
-   * coordinates: Coordinate[];
-   * iconSize: number;
-   * }
-   */
-  preplacedIcons?: PreplacedIcon[];
+  initialIcons?: PlacedIcon[];
   dimensions?: [number, number];
 };
 
 const SimpleGrid = ({
-  preplacedIcons = [],
+  initialIcons = [],
   gridWidth = 300,
   gridHeight = 300,
   dimensions = [5, 5],
@@ -31,7 +23,7 @@ const SimpleGrid = ({
       yDomain={[0, maxYDomain]}
       gridHeight={gridHeight}
       gridWidth={gridWidth}
-      preplacedIcons={preplacedIcons}
+      initialIcons={initialIcons}
       showXLabels={false}
       showYLabels={false}
       xTicksNumber={dimensions[0]}
