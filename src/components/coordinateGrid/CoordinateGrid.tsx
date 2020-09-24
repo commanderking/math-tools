@@ -29,6 +29,7 @@ type Props = {
    * Overrides internal state in terms of which icons to show
    */
   activeIcons?: PlacedIcon[];
+  onIconClick?: (icon: PlacedIcon, allIcons: PlacedIcon[]) => void;
 };
 
 const CoordinateGrid = ({
@@ -44,8 +45,9 @@ const CoordinateGrid = ({
   initialIcons = [],
   addableIcon,
   activeIcons,
+  onIconClick = () => {},
 }: Props) => {
-  const { onAddIcon = noop, onAddedIconClick = noop } = addableIcon || {};
+  const { onAddIcon = noop } = addableIcon || {};
   const [addedIconsInternal, setAddedIcons] = useState<PlacedIcon[]>(
     initialIcons
   );
@@ -183,14 +185,13 @@ const CoordinateGrid = ({
               xlinkHref={image}
               onClick={() => {
                 const iconKey = `${x}-${y}`;
-
+                const updatedAddedIcons = addedIconsInternal.filter(
+                  (icon) => icon.key !== iconKey
+                );
                 if (!activeIcons) {
-                  const updatedAddedIcons = addedIconsInternal.filter(
-                    (icon) => icon.key !== iconKey
-                  );
                   setAddedIcons(updatedAddedIcons);
                 }
-                onAddedIconClick(icon);
+                onIconClick(icon, updatedAddedIcons);
               }}
             />
           );

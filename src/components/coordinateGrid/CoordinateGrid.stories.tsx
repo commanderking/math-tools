@@ -53,6 +53,7 @@ export const PreplacedIcons = () => {
         { x: -5, y: -2, label: "C", size, image },
         { x: -3, y: -4, label: "D", size, image },
       ]}
+      onIconClick={action("Remove Icon")}
     />
   );
 };
@@ -72,8 +73,8 @@ export const AddableIcons = () => {
         size: number("Icon Size", 20),
         maxIcons: number("Max Number of Icons", 5),
         onAddIcon: action("Added Icon"),
-        onAddedIconClick: action("Remove Icon"),
       }}
+      onIconClick={action("Remove Icon")}
     />
   );
 };
@@ -107,9 +108,9 @@ export const AddableControlledIcons = () => {
         size: number("Icon Size", 20),
         maxIcons: number("Max Number of Icons", 5),
         onAddIcon: handleAddIcon,
-        onAddedIconClick: handleAddableIconClick,
       }}
       activeIcons={activeIcons}
+      onIconClick={handleAddableIconClick}
     />
   );
 };
