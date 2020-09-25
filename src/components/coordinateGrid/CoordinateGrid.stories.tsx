@@ -53,7 +53,7 @@ export const PreplacedIcons = () => {
         { x: -5, y: -2, label: "C", size, image },
         { x: -3, y: -4, label: "D", size, image },
       ]}
-      onIconClick={action("Remove Icon")}
+      onIconClick={action("Icon Clicked")}
     />
   );
 };
@@ -74,7 +74,7 @@ export const AddableIcons = () => {
         maxIcons: number("Max Number of Icons", 5),
         onAddIcon: action("Added Icon"),
       }}
-      onIconClick={action("Remove Icon")}
+      onIconClick={action("Icon Clicked")}
     />
   );
 };
