@@ -16,7 +16,6 @@ export type AddableIcon = {
   size: number;
   maxIcons?: number;
   onAddIcon?: (icon: PlacedIcon) => void;
-  onAddedIconClick?: (icon: PlacedIcon) => void;
 };
 
 export type PlacedIcon = {
@@ -26,5 +25,4 @@ export type PlacedIcon = {
   key?: string;
   image: string;
   size: number;
-  onClick?: () => void;
 };
