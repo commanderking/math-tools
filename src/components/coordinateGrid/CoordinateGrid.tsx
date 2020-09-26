@@ -145,13 +145,11 @@ const CoordinateGrid = ({
           !hasAddedMaxIcons &&
           clickableCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
-            const { image, size } = addableIcon;
             const currentIcon = {
+              ...addableIcon,
               x,
               y,
               key: `${x}-${y}`,
-              size,
-              image,
             };
             return (
               <circle
@@ -173,27 +171,39 @@ const CoordinateGrid = ({
             );
           })}
         {addedIcons.map((icon: PlacedIcon) => {
-          const { x, y, image, size } = icon;
+          const { x, y, image, size, label } = icon;
           return (
-            <image
-              key={`addable-icon-coordinate-${x}-${y}`}
-              href={image}
-              x={xScale(x) - size / 2}
-              y={yScale(y) - size / 2}
-              width={size}
-              height={size}
-              xlinkHref={image}
-              onClick={() => {
-                const iconKey = `${x}-${y}`;
-                const updatedAddedIcons = addedIconsInternal.filter(
-                  (icon) => icon.key !== iconKey
-                );
-                if (!activeIcons) {
-                  setAddedIcons(updatedAddedIcons);
-                }
-                onIconClick(icon, updatedAddedIcons);
-              }}
-            />
+            <React.Fragment>
+              <image
+                key={`addable-icon-coordinate-${x}-${y}`}
+                href={image}
+                x={xScale(x) - size / 2}
+                y={yScale(y) - size / 2}
+                width={size}
+                height={size}
+                xlinkHref={image}
+                onClick={() => {
+                  const iconKey = `${x}-${y}`;
+                  const updatedAddedIcons = addedIconsInternal.filter(
+                    (icon) => icon.key !== iconKey
+                  );
+                  if (!activeIcons) {
+                    setAddedIcons(updatedAddedIcons);
+                  }
+                  onIconClick(icon, updatedAddedIcons);
+                }}
+              />
+              {label && (
+                <text
+                  key={`preplaced-icon-label-${x}-${y}`}
+                  x={xScale(x) - size}
+                  y={yScale(y) - size / 2}
+                  fontSize={size}
+                >
+                  {label}
+                </text>
+              )}
+            </React.Fragment>
           );
         })}
       </g>
