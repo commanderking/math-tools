@@ -145,14 +145,11 @@ const CoordinateGrid = ({
           !hasAddedMaxIcons &&
           clickableCoordinates.map((coordinate: Coordinate) => {
             const { x, y } = coordinate;
-            const { image, size, label } = addableIcon;
             const currentIcon = {
+              ...addableIcon,
               x,
               y,
               key: `${x}-${y}`,
-              size,
-              image,
-              label,
             };
             return (
               <circle

@@ -105,7 +105,7 @@ export const AddableControlledIcons = () => {
           { CellTower: cellTower, Home: homeIcon },
           cellTower
         ),
-        size: number("Icon Size of Next Added Icon", 15),
+        size: number("Icon Size of Next Added Icon", 20),
         maxIcons: number("Max Number of Icons", 5),
         onAddIcon: handleAddIcon,
         label: text("Label", ""),
