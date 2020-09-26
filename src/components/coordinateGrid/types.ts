@@ -15,6 +15,7 @@ export type AddableIcon = {
   image: string;
   size: number;
   maxIcons?: number;
+  label?: string;
   onAddIcon?: (icon: PlacedIcon) => void;
 };
 

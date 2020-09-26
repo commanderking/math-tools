@@ -34,7 +34,7 @@ export const Basic = () => (
 );
 
 export const PreplacedIcons = () => {
-  const size = number("Icon Size", 15);
+  const size = 15;
   const image = homeIcon;
   return (
     <CoordinateGrid
@@ -43,8 +43,8 @@ export const PreplacedIcons = () => {
       gridWidth={gridDimension}
       initialIcons={[
         {
-          x: number("Icon x-coordinate", 1),
-          y: number("Icon y-coordinate", 2),
+          x: 1,
+          y: 2,
           label: text("Coordinate Label", "B"),
           size: 15,
           image,
@@ -70,7 +70,7 @@ export const AddableIcons = () => {
           { CellTower: cellTower, Home: homeIcon },
           cellTower
         ),
-        size: number("Icon Size", 20),
+        size: number("Icon Size of Next Added Icon", 20),
         maxIcons: number("Max Number of Icons", 5),
         onAddIcon: action("Added Icon"),
       }}
@@ -105,9 +105,10 @@ export const AddableControlledIcons = () => {
           { CellTower: cellTower, Home: homeIcon },
           cellTower
         ),
-        size: number("Icon Size", 20),
+        size: number("Icon Size of Next Added Icon", 15),
         maxIcons: number("Max Number of Icons", 5),
         onAddIcon: handleAddIcon,
+        label: text("Label", ""),
       }}
       activeIcons={activeIcons}
       onIconClick={handleAddableIconClick}
