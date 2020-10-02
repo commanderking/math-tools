@@ -173,7 +173,7 @@ const CoordinateGrid = ({
         {addedIcons.map((icon: PlacedIcon) => {
           const { x, y, image, size, label } = icon;
           return (
-            <React.Fragment>
+            <React.Fragment key={`added-icon-wrapper-${x}-${y}`}>
               <image
                 key={`addable-icon-coordinate-${x}-${y}`}
                 href={image}
