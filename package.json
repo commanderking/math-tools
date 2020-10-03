@@ -1,6 +1,7 @@
 {
   "name": "open-math-tools",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "version": "0.5.0",
   "scripts": {
     "storybook": "start-storybook -p 9009 -s public",
